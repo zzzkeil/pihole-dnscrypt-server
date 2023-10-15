@@ -133,7 +133,7 @@ fi
 #
 
 echo -e "${GREEN}Set ssh config  ${ENDCOLOR}"
-rread -p "Choose your SSH Port: (default 22) " -e -i 2299 sshport
+read -p "Choose your SSH Port: (default 22) " -e -i 2299 sshport
 ssh-keygen -f /etc/ssh/key1ecdsa -t ecdsa -b 521 -N ""
 ssh-keygen -f /etc/ssh/key2ed25519 -t ed25519 -N ""
 
