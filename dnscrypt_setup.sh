@@ -86,6 +86,14 @@ chmod +x /etc/dnscrypt-proxy/dnscrypt-proxy-update.sh
 /etc/dnscrypt-proxy/dnscrypt-proxy -service install
 /etc/dnscrypt-proxy/dnscrypt-proxy -service start
 
+#
+##
+### ToDo -    change files from pihole to use dnscrypt   -- pihole v6  /  v5 ??  
+##
+#
+
+
+
 echo '#!/bin/sh
 runtime1=$(uptime -s)
 runtime2=$(uptime -p)
