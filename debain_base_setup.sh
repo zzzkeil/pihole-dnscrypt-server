@@ -79,32 +79,30 @@ clear
 #
 # Password
 #
-echo ""
-echo ""
-echo -e " ${GREEN}Enable root and set a secure password ${ENDCOLOR}"
+echo -e " ${GREEN}Set a secure root password ${ENDCOLOR}"
+
 echo ""
 echo " This script can create a random secure root password."
+echo " You may want to use PubkeyAuthentication, so setup this later by yourself"
 echo ""
 echo ""
-echo  -e " ${GRAY}Press any key  - to enter your custom root password ${ENDCOLOR}"
+echo  -e " ${GRAY}Press any key  -  to ${RED}NOT${ENDCOLOR} change root password ${ENDCOLOR}"
 echo ""
-echo  -e " ${GRAY}Press [C]  -  to create a secure random root password ${ENDCOLOR}"
+echo  -e " ${GRAY}Press [C]  -  to create a secure random root password for local servers ${ENDCOLOR}"
 read -p "" -n 1 -r
 echo ""
 echo ""
 if [[ ! $REPLY =~ ^[Cc]$ ]]
 then
 newpass=0
-echo " Get sure you use a secure password ! "
+echo " Ok no password change"
+echo " Get sure you use a secure password or use PubkeyAuthentication !"
 echo ""
-read -p "Set your password here : " -e -i replacethiswithapassword yourpasswd
-echo ""
-echo "root:$yourpasswd" | chpasswd
 echo ""
 read -p "Press enter to continue"
 else
 newpass=1
-randompasswd=$(</dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c 16 ; echo)
+randompasswd=$(</dev/urandom tr -dc 'A-Za-z0-9!"?%&' | head -c 16  ; echo)
 echo "root:$randompasswd" | chpasswd
 echo ""
 echo ""
@@ -125,8 +123,9 @@ echo " if you not save this password, you can never loggin again, be carefull"
 echo ""
 echo ""
 read -p "Press enter to continue"
-clear
 fi
+
+clear
 
 #
 # SSH
