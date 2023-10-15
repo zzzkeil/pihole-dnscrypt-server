@@ -185,7 +185,7 @@ hostnamectl set-hostname $hostnamex
 echo -e "${GREEN}Set ufw config  ${ENDCOLOR}"
 read -p "Allow ssh from Private IP Address or Range - CIDR : " -e -i 192.168.0.0/16 cidr
 ufw default deny incoming
-ufw allow from $cidr to any port $sshport/tcp
+ufw allow from $cidr proto tcp to any port $sshport
 #ufw allow from 192.168.0.0/16 to any port $sshport/tcp
 #ufw allow from 172.16.0.0/12 to any port $sshport/tcp
 #ufw allow from 10.0.0.0/8 to any port $sshport/tcp
