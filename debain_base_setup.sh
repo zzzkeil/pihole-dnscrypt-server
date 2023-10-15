@@ -13,10 +13,10 @@ ENDCOLOR="\e[0m"
 
 clear
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
-echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}Base server config Raspberry Pi OS Lite                                    ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
+echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}Base server config 4 debian / raspberry pi lite                            ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
 echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}This script installs an configure :                                        ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
-echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}password,ssh,ufw,network,unattended-upgrades                      ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
-echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}Infos @ https://github.com/zzzkeil/misc                                    ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
+echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}password,ssh,ufw,network,unattended-upgrades                               ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
+echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}Infos @ https://github.com/zzzkeil/pihole-dnscrypt-server                  ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
 echo -e " ${GRAYB}#${ENDCOLOR}                 Version 2023.10.XX - changelog on github                   ${GRAYB}#${ENDCOLOR}"
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
@@ -24,7 +24,7 @@ echo ""
 echo ""
 
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
-echo -e " ${GRAYB}#${ENDCOLOR} ${RED}! Warning, this script removes the user pi and activate root user            ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
+echo -e " ${GRAYB}#${ENDCOLOR} ${RED}! Warning, this script activate root user                             ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
 echo -e " ${GRAYB}#${ENDCOLOR} You need to run this as root  with     sudo -i                              ${GRAYB}#${ENDCOLOR}"
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
@@ -232,6 +232,13 @@ sed -i "s@6:00@1:00@" /lib/systemd/system/apt-daily-upgrade.timer
 clear
 
 #
+# download pihole dnscrypt sh
+#
+wget -O  pihole_dnscrypt_setup.sh https://raw.githubusercontent.com/zzzkeil/pihole-dnscrypt-server/main/pihole_dnscrypt_setup.sh
+chmod +x pihole_dnscrypt_setup.sh
+
+
+#
 #misc
 #
 
@@ -242,6 +249,7 @@ runtime1=$(uptime -s)
 runtime2=$(uptime -p)
 echo "System uptime : $runtime1  / $runtime2 "
 echo ""
+echo "Now run ./pihole_dnscrypt_setup.sh to finish the setup"
 ' >> /etc/update-motd.d/99-base01
 chmod +x /etc/update-motd.d/99-base01
 
@@ -249,19 +257,6 @@ echo "base_server script installed from :
 https://github.com/zzzkeil/pihole-dnscrypt-server
 " > /root/base_setup.README
 
-
-#
-# remove user pi
-#
-
-rm -vf /etc/sudoers.d/010_pi-nopasswd
-deluser -remove-home pi
-
-
-#
-# download pihole dnscrypt sh
-#
-#.........
 
 #
 # END
@@ -288,6 +283,7 @@ echo ""
 echo ""
 fi
 echo ""
+echo -e "${GRAYB}After reboot run ./pihole_dnscrypt_setup.sh to finish the setup ${ENDCOLOR}"
 echo ""
 echo -e "${GREEN}Press enter to reboot  ${ENDCOLOR}"
 read -p ""
