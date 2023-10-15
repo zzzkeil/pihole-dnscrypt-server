@@ -175,8 +175,8 @@ clear
 echo -e "${GREEN}Set network config  ${ENDCOLOR}"
 read -p "Your hostname :" -e -i remotehost hostnamex
 hostnamectl set-hostname $hostnamex
-nano /etc/dhcpcd.conf
 
+#clear
 
 #
 # UFW
@@ -189,7 +189,7 @@ ufw allow from $cidr to any port $sshport/tcp
 #ufw allow from 192.168.0.0/16 to any port $sshport/tcp
 #ufw allow from 172.16.0.0/12 to any port $sshport/tcp
 #ufw allow from 10.0.0.0/8 to any port $sshport/tcp
-clear
+#clear
 
 
 #
@@ -228,7 +228,7 @@ nano /etc/apt/apt.conf.d/20auto-upgrades
 sed -i "s@6,18:00@9,23:00@" /lib/systemd/system/apt-daily.timer
 sed -i "s@12h@1h@" /lib/systemd/system/apt-daily.timer
 sed -i "s@6:00@1:00@" /lib/systemd/system/apt-daily-upgrade.timer
-clear
+#clear
 
 #
 # download pihole dnscrypt sh
@@ -265,7 +265,7 @@ https://github.com/zzzkeil/pihole-dnscrypt-server
 # END
 #
 
-clear
+#clear
 echo ""
 echo ""
 if [[ "$newpass" -ne 0 ]]; then
