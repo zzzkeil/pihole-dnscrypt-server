@@ -85,4 +85,13 @@ chmod +x /etc/dnscrypt-proxy/dnscrypt-proxy-update.sh
 
 /etc/dnscrypt-proxy/dnscrypt-proxy -service install
 /etc/dnscrypt-proxy/dnscrypt-proxy -service start
+
+echo '#!/bin/sh
+runtime1=$(uptime -s)
+runtime2=$(uptime -p)
+echo "System uptime : $runtime1  / $runtime2 "
+echo ""
+' >> /etc/update-motd.d/99-base01
+chmod +x /etc/update-motd.d/99-base01
+
 exit
