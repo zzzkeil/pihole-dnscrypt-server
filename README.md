@@ -1,6 +1,7 @@
 # pihole-dnscrypt-server
 
 #### testing 
+script will be finished with the relase of pihole version 6
 
 
 ###### Server x86 and arm64  
