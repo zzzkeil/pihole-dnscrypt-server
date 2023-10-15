@@ -28,6 +28,8 @@ echo -e " ${GRAYB}#${ENDCOLOR} ${RED}! Warning, this script removes the user pi 
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
 echo -e " ${GRAYB}#${ENDCOLOR} You need to run this as root  with     sudo -i                              ${GRAYB}#${ENDCOLOR}"
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
+echo -e " ${REDB}#${ENDCOLOR} under construction :) dont run this script now                               ${REDB}#${ENDCOLOR}"
+echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
 
 echo ""
 echo  -e "                    ${RED}To EXIT this script press any key${ENDCOLOR}"
