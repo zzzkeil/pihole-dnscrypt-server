@@ -234,8 +234,12 @@ clear
 #
 # download pihole dnscrypt sh
 #
-wget -O  pihole_dnscrypt_setup.sh https://raw.githubusercontent.com/zzzkeil/pihole-dnscrypt-server/main/pihole_dnscrypt_setup.sh
-chmod +x pihole_dnscrypt_setup.sh
+wget -O pihole_basic-install.sh https://install.pi-hole.net
+chmod +x pihole_basic-install.sh
+
+
+wget -O  dnscrypt_setup.sh https://raw.githubusercontent.com/zzzkeil/pihole-dnscrypt-server/main/dnscrypt_setup.sh
+chmod +x dnscrypt_setup.sh
 
 
 #
@@ -249,7 +253,7 @@ runtime1=$(uptime -s)
 runtime2=$(uptime -p)
 echo "System uptime : $runtime1  / $runtime2 "
 echo ""
-echo "Now run ./pihole_dnscrypt_setup.sh to finish the setup"
+echo "Now run ./pihole_basic-install.sh and after ./dnscrypt_setup.sh to finish the setup"
 ' >> /etc/update-motd.d/99-base01
 chmod +x /etc/update-motd.d/99-base01
 
@@ -283,7 +287,7 @@ echo ""
 echo ""
 fi
 echo ""
-echo -e "${GRAYB}After reboot run ./pihole_dnscrypt_setup.sh to finish the setup ${ENDCOLOR}"
+echo -e "${GRAYB}After reboot run ./pihole_basic-install.sh to finish the setup ${ENDCOLOR}"
 echo ""
 echo -e "${GREEN}Press enter to reboot  ${ENDCOLOR}"
 read -p ""
