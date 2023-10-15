@@ -15,10 +15,10 @@ clear
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
 echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}Base server config Raspberry Pi OS Lite                                    ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
 echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}This script installs an configure :                                        ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
-echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}password,ssh,fail2ban,ufw,network,unattended-upgrades                      ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
+echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}password,ssh,ufw,network,unattended-upgrades                      ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
 echo -e " ${GRAYB}#${ENDCOLOR} ${GREEN}Infos @ https://github.com/zzzkeil/misc                                    ${ENDCOLOR}${GRAYB}#${ENDCOLOR}"
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
-echo -e " ${GRAYB}#${ENDCOLOR}                 Version 2022.01.29 - changelog on github                   ${GRAYB}#${ENDCOLOR}"
+echo -e " ${GRAYB}#${ENDCOLOR}                 Version 2023.10.XX - changelog on github                   ${GRAYB}#${ENDCOLOR}"
 echo -e " ${GRAYB}##############################################################################${ENDCOLOR}"
 echo ""
 echo ""
@@ -70,7 +70,7 @@ fi
 
 echo -e "${GREEN}apt update upgrade and install ${ENDCOLOR}"
 apt update && apt upgrade -y && apt autoremove -y
-apt install ufw fail2ban  unattended-upgrades apt-listchanges -y 
+apt install ufw unattended-upgrades apt-listchanges -y 
 mkdir /root/script_backupfiles/
 clear
 
@@ -102,7 +102,7 @@ echo ""
 read -p "Press enter to continue"
 else
 newpass=1
-randompasswd=$(</dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c 64  ; echo)
+randompasswd=$(</dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c 16 ; echo)
 echo "root:$randompasswd" | chpasswd
 echo ""
 echo ""
@@ -131,26 +131,40 @@ fi
 #
 
 echo -e "${GREEN}Set ssh config  ${ENDCOLOR}"
-read -p "Choose your SSH Port: (default 22) " -e -i 2222 sshport
-ssh-keygen -f /etc/ssh/key1rsa -t rsa -b 4096 -N ""
-ssh-keygen -f /etc/ssh/key2ecdsa -t ecdsa -b 521 -N ""
-ssh-keygen -f /etc/ssh/key3ed25519 -t ed25519 -N ""
+rread -p "Choose your SSH Port: (default 22) " -e -i 2299 sshport
+ssh-keygen -f /etc/ssh/key1ecdsa -t ecdsa -b 521 -N ""
+ssh-keygen -f /etc/ssh/key2ed25519 -t ed25519 -N ""
 
 mv /etc/ssh/sshd_config /root/script_backupfiles/sshd_config.orig
 echo "Port $sshport
-HostKey /etc/ssh/key1rsa
-HostKey /etc/ssh/key2ecdsa
-HostKey /etc/ssh/key3ed25519
-macs hmac-sha2-256,hmac-sha2-512,umac-128@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
+HostKey /etc/ssh/key1ecdsa
+HostKey /etc/ssh/key2ed25519
+HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com,ssh-ed25519  
+KexAlgorithms curve25519-sha256                                 
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com    
+MACs hmac-sha2-512-etm@openssh.com
+HostbasedAcceptedKeyTypes ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519
+
 PermitRootLogin yes
 PasswordAuthentication yes
+#PubkeyAuthentication yes
+
+MaxAuthTries 2
 ChallengeResponseAuthentication no
 UsePAM yes
 X11Forwarding no
+AllowTcpForwarding no
+AllowAgentForwarding no
 PermitEmptyPasswords no
 PrintMotd no
 AcceptEnv LANG LC_*
-Subsystem sftp  internal-sftp" >> /etc/ssh/sshd_config
+Subsystem sftp  internal-sftp 
+UseDNS no
+Compression no
+LoginGraceTime 45
+ClientAliveCountMax 1
+ClientAliveInterval 1800
+IgnoreRhosts yes">> /etc/ssh/sshd_config
 clear
 
 #
@@ -176,25 +190,6 @@ ufw allow from $cidr to any port $sshport/tcp
 #ufw allow from 10.0.0.0/8 to any port $sshport/tcp
 clear
 
-#
-# fail2ban
-#
-
-echo -e "${GREEN}Set fail2ban for ssh ${ENDCOLOR}"
-echo "
-[sshd]
-enabled = true
-port = $sshport
-filter = sshd
-logpath = /var/log/auth.log
-backend = %(sshd_backend)s
-maxretry = 3
-banaction = ufw
-findtime = 1h
-bantime = 1d
-" >> /etc/fail2ban/jail.d/ssh.conf
-sed -i "/blocktype = reject/c\blocktype = deny" /etc/fail2ban/action.d/ufw.conf
-clear
 
 #
 # Updates
@@ -240,29 +235,17 @@ clear
 
 echo -e "${GREEN}Clear/Change some stuff ${ENDCOLOR}"
 
-if [[ -e /etc/update-motd.d/10-help-text ]]; then
-    chmod -x /etc/update-motd.d/10-help-text
-fi
-if [[ -e //etc/update-motd.d/50-motd-news ]]; then
-    chmod -x /etc/update-motd.d/50-motd-news
-fi
-if [[ -e /etc/update-motd.d/80-livepatch ]]; then
-    chmod -x /etc/update-motd.d/80-livepatch
-fi
-
 echo '#!/bin/sh
 runtime1=$(uptime -s)
 runtime2=$(uptime -p)
-#totalban1=$(zgrep 'Ban' /var/log/fail2ban.log* | wc -l)
 echo "System uptime : $runtime1  / $runtime2 "
 echo ""
-#echo "Total banned IPs from fail2ban : $totalban1 "
 ' >> /etc/update-motd.d/99-base01
 chmod +x /etc/update-motd.d/99-base01
-echo "base_server script installed from :
-https://github.com/zzzkeil/base_setups
-" > /root/base_setup.README
 
+echo "base_server script installed from :
+https://github.com/zzzkeil/pihole-dnscrypt-server
+" > /root/base_setup.README
 
 
 #
